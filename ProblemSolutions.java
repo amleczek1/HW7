@@ -1,12 +1,13 @@
 /******************************************************************
  *
- *   YOUR NAME / SECTION NUMBER
+ *   Adrian Mleczek/ 001
  *
  *   This java file contains the problem solutions for the methods selectionSort,
  *   mergeSortDivisibleByKFirst, asteroidsDestroyed, and numRescueCanoes methods.
  *
  ********************************************************************/
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ProblemSolutions {
@@ -41,7 +42,29 @@ public class ProblemSolutions {
             // YOU CODE GOES HERE -- COMPLETE THE INNER LOOP OF THIS
             // "SELECTION SORT" ALGORITHM.
             // DO NOT FORGET TO ADD YOUR NAME / SECTION ABOVE
-
+            
+            //index holds the extreme element
+            int index = i;
+            for(int j = i+1;j<n;j++)
+            {
+            
+                //if in ascending order
+                if (ascending && values[j] < values[index]) 
+                {
+                    //found a smaller value, thus it becomes the index
+                    index = j;
+                }
+                //if in descending order
+                if(!ascending && values[j] > values[index])
+                {
+                    //found a larger value, thus it becomes the index
+                    index = j;
+                }
+            }
+            //the extreme value/index and [i] swap--[i] is the first unsorted element
+            int temp = values[index];
+            values[index] = values[i];
+            values[i] = temp;    
         }
 
     } // End class selectionSort
@@ -101,9 +124,78 @@ public class ProblemSolutions {
         // ALLOCATES AUXILIARY DATA STRUCTURES (TEMPORARY ARRAYS). IT WILL BE EASIER
         // TO CODE WITH A SPACE COMPLEXITY OF O(N LOG N), WHICH IS FINE FOR PURPOSES
         // OF THIS PROGRAMMING EXERCISES.
+        
+        //size of the left and right arrays
+        int ls = mid - left + 1;
+        int rs = right - mid;
+        
+        //arrays for each side
+        int[] leftAr = new int[ls];
+        int[] rightAr = new int[rs];
+        
+        
+        //populate each of said arrays
+        for (int i = 0; i < ls; i++) 
+        {
+        leftAr[i] = arr[i + left];
+        }
+        for (int j = 0; j < rs; j++) 
+        {
+        rightAr[j] = arr[mid + 1 + j];
+        }
+        
+        //define indexes for following loop
+         int i = 0, j = 0, compare = left;
 
-        return;
+        
+         while (i < ls && j < rs) 
+         {
+             //create booleans for conditions--easier to write
+            boolean leftCheck = leftAr[i] % k == 0;
+            boolean rightCheck = rightAr[j] % k == 0;
+           //prioritizes divisible elements
+            //assuming only one side matches the conditions
+            if (leftCheck && !rightCheck) 
+            {
+            arr[compare++] = leftAr[i++];
+            } 
+            else if (rightCheck && !leftCheck) 
+            {
+            arr[compare++] = rightAr[j++];
+            } 
+            //if both, prefer left
+            else if(leftCheck)
+            {
+              arr[compare++] = leftAr[i++];
+            }
+            else if(rightCheck)
+            {
+              arr[compare++] = rightAr[i++];
+            }
+            //if not divisible by k, assume regular sort
+            else
+            {
+                if(leftAr[i]<=rightAr[j])
+                {
+                    arr[compare++] = leftAr[i++];
+                }
+                else
+                {
+                    arr[compare++] = rightAr[j++];
+                }
+            }
+         }
 
+            
+         //copy remaining elements into the array
+            while (i < ls) 
+            {
+                arr[compare++] = leftAr[i++];
+            }
+            while (j < rs) 
+            {
+                arr[compare++] = rightAr[j++];
+            }
     }
 
 
@@ -155,8 +247,25 @@ public class ProblemSolutions {
     public static boolean asteroidsDestroyed(int mass, int[] asteroids) {
 
         // YOUR CODE GOES HERE, CONSIDER USING ARRAYS.SORT()
+         // sort like instructed :)
+        Arrays.sort(asteroids);
 
-        return false;
+        // Iterate 
+        for (int asteroid : asteroids) {
+            if (mass >= asteroid) 
+            {
+                // planet absorbs astroid
+                mass += asteroid;
+            } 
+            else 
+            {
+                //cannot destroy asteroroid, so planet is gone :(
+                return false;
+            }
+        }
+        // planet survives
+        return true;
+        
 
     }
 
@@ -193,9 +302,35 @@ public class ProblemSolutions {
     public static int numRescueSleds(int[] people, int limit) {
 
         // YOUR CODE GOES HERE, CONSIDER USING ARRAYS.SORT
+        
+        //sort like instructed
+        Arrays.sort(people);
 
-        return -1;
+        // intialize indexes and counter
+        int sleds = 0;
+        int light = 0;
+        int end = people.length - 1;
+        
 
+        //match people from opposite ends
+        while (light <= end) {
+            //check if people from both ends can go
+            if (people[light] + people[end] <= limit)
+            {
+                //yes, so both share a sled and we iterate
+                light++;  
+                end--; 
+            } 
+            else 
+            {
+               //no, so only the heaviest goes 
+                end--; 
+            }
+            // marks an occupied sled
+            sleds++;
+        }
+
+        return sleds;
     }
 
 } // End Class ProblemSolutions
